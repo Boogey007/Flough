@@ -16,7 +16,6 @@ chrome.storage.local.get(
 
     // Go into github Script
     if( environmentId == 1 ) {
-        console.log(environmentId)
         if ( option == 'commit' )
             main = getGithubCommitMessage(url)
         else 
@@ -26,8 +25,6 @@ chrome.storage.local.get(
 
     // go into azure scripts
     else if ( environmentId == 2  ) {
-        console.log(environmentId)
-
         if ( option == 'commit' )
             main = getAzureCommitMessage(url)
         else 
@@ -111,24 +108,30 @@ function getAzureCommitMessage(pageUrl) {
     azureStoryNumber = getLastString(itemTitle)  
     let type = getItemType(itemTitle);
 
+
      switch (type) {
         case 1: // Bug
-            branchText = `bugfix/${TEAM_INITIALS}/${azureStoryNumber}`
+            prefaceText = `bugfix/`            
             break;
         case 2: // User Story
-            branchText = `feature/${TEAM_INITIALS}/${azureStoryNumber}`
+            prefaceText = `feature/`
             break;
         default:
-            branchText = `${TEAM_INITIALS}/${azureStoryNumber}`
+            prefaceText = `${TEAM_INITIALS}/${azureStoryNumber}`
             break;
      }
   
+     // Form Branch Text
+     if(TEAM_INITIALS)
+        TEAM_INITIALS = TEAM_INITIALS + '/'
+
+    branchText = prefaceText += TEAM_INITIALS
+
+    // Always end with story/number
+    branchText = prefaceText += azureStoryNumber
+
      var main = branchText;
-      if( !main ){
-          if(!formId) console.log('Form Id not getting found')
-          if(!branchHandle) console.log('branchHandle not being found')
-      }
-  
+
       return removeWhitespace(main)
   }
  // *** ---------- END: AZURE ------------  *** //
@@ -262,7 +265,8 @@ function getItemType(item) {
 
 function setAllSettings(settings) {
     if(!settings) return
-    TEAM_INITIALS = settings.teamInitials
+
+    TEAM_INITIALS = settings.teamInitials ? settings.teamInitials : ''
 }
 
 function getLastString(text) {

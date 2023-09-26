@@ -11,7 +11,6 @@ getUserOptions()
 // Saves options to chrome.storage
 function saveOptions() {
     const teamInitials = document.getElementById('teamInitials').value;
-  console.log(teamInitials)
     chrome.storage.sync.set(
       { teamInitials: teamInitials },
       () => {
