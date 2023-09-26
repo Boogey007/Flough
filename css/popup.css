@@ -1,0 +1,130 @@
+html {
+    background: rgb(255, 255, 255);
+    width: 317px;
+    height: 155px;
+    border-radius: 5px;
+    background-color: #cccccb;
+
+}
+h1,h2,h3,h4 {
+  color: black;
+}
+
+.grid-container {
+    display: grid;
+    text-align: center;
+    grid-template-columns:150px 150px ;
+}
+
+.commit-button {
+  background-color: #2BA3F3;
+  color: #2BA3F3;
+}
+.commit-button-text {
+  color: white;
+}
+.commit-button:hover {
+  background: #3399dd;
+}
+
+.branch-button {
+  background-color: white;
+}
+.branch-button-text {
+  color: #2BA3F3;
+}
+.branch-button:hover {
+  background: rgb(241, 241, 241);
+}
+
+.cog {
+  vertical-align:middle
+}
+.settings {
+  position: absolute;
+  left: 284px;
+  z-index: 9999;
+}
+
+.spacer10 {
+  height: 10px;
+}
+.spacer30 {
+  height: 30px;
+}
+
+
+button{
+  font-family: 'Ubuntu', sans-serif;
+  width: 130px;
+  height: 50px;
+  
+  line-height: 1;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  border: 1px solid #aaaaaa;
+  background: #fff;
+  border-radius: 40px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all .35s;
+}
+
+
+button span{
+  opacity: 1;
+  visibility: visible;
+  transition: all .35s;
+}
+
+.success{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border-radius: 50%;
+  z-index: 1;
+  opacity: 0;
+  visibility: hidden;
+  transition: all .35s;
+}
+
+.success svg{
+  width: 20px;
+  height: 20px;
+  fill: yellowgreen;
+  transform-origin: 50% 50%;
+  transform: translateY(-50%) rotate(0deg) scale(0);
+  transition: all .35s;
+}
+
+button.is_active{
+  width: 40px;
+  height: 40px;
+}
+
+button.is_active .success{
+  opacity: 1;
+  visibility: visible;
+}
+
+button.is_active .success svg{
+  margin-top: 50%;
+  transform: translateY(-50%) rotate(720deg) scale(1);
+}
+
+button.is_active span{
+  opacity: 0;
+  visibility: hidden;
+}
+
+.octocat-coding {
+  height: 90px;
+  width: 100px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
