@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <link rel="stylesheet" href="../css/popup.css">
+  <link rel="stylesheet" href="../css/popup.scss">
 
 <head>
   <meta charset="utf-8">
@@ -8,30 +9,45 @@
 
 </head>
 
-<body>
-<div class="settings">
-    <a href="options.html">
-        <img class="cog" src="../images/cog.png" height="25px" width="25px" >
-    </a>
+<body class="background">
+  
+<div class="snowflakes" aria-hidden="true">
+  <div class="snowflake"> ❅ </div>
+  <div class="snowflake"> ❅ </div>
+  <div class="snowflake"> ❅ </div>
+  <div class="snowflake"> ❅ </div>
+  <div class="snowflake"> ❅ </div>
+  <div class="snowflake"> ❅ </div>
+  <div class="snowflake"> ❅ </div>
+  <div class="snowflake"> ❅ </div>
+  <div class="snowflake"> ❅ </div>
+  <div class="snowflake"> ❅ </div>
 </div>
-<div class="spacer10"></div>
-
-<div>
-  <img class="octocat-coding" src="../images/octocat_codie.png" height="100%" alt="GitGot" />
-</div>
-<div class="spacer10"></div>
-
-
-  <div class="grid-container">
-    <div class="list">
-        <button class="commit-button commit-button-text" id="mybCommit">Get Commit</button>
-    </div>
-    <div class="list">
-        <button class="branch-button branch-button-text" id="mybBranch">Get Branch</button>
-
-    </div>
- <div>
-    <div class="spacer30"></div>
+  <div class="">
+    <div class="settings">
+      <a href="options.html">
+        <button class="button56" role="button">Settings</button>
+      </a>
+  </div>
+  <div class="spacer10"></div>
+  
+  <div>
+    <!-- <img class="octocat-coding" src="../images/octocat_codie.png" height="100%" alt="GitGot" /> -->
+  </div>
+  <div class="spacer10"></div>
+  
+  
+    <div class="grid-container">
+      <div class="list">
+        <button class="button-56" id="mybCommit" role="button">Commit Message</button>
+      </div>
+      <div class="list">
+        <button class="button-56" id="mybBranch" role="button">Branch Message</button>  
+      </div>
+   <div>
+      <div class="spacer30"></div>
+  
+  </div>
 
 
 </body>
