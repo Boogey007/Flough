@@ -43,13 +43,11 @@ chrome.storage.local.get(
 
 // Page source detection
 function determineSourcePage(pageUrl) {
-    
+    if(!pageUrl) return 0
     if (pageUrl.includes('github.com'))
         return 1
     else if (pageUrl.includes('dev.azure.com')) 
         return 2
-    else 
-        return 0
 }
 
 function copyTextToClipboard(text) {
@@ -82,17 +80,26 @@ function copyTextToClipboard(text) {
 // *** ---------- START: AZURE ------------  *** //
 function getAzureCommitMessage(pageUrl) {
     // Get The title of the task -- Emails - Reply To All
-    var tempEl = document.querySelector('[id^="witc_"][id$="txt"]').id;
+    var tempEl = document.querySelector('[id^="witc_"][id$="txt"]');
+    if( !! tempEl )
+        tempEl = tempEl.id
+    
     var inputBox = document.getElementById(tempEl)
     var commitTitle = !! inputBox ? inputBox.value : ''
 
     // Get the number of the task -- 422
-    var formId = document.getElementsByClassName("work-item-form-id")[0].innerText;
- 
+    var formId = document.getElementsByClassName("work-item-form-id")[0] ? document.getElementsByClassName("work-item-form-id")[0].innerText : '' ;    
+
     // Assemble Commit Message
     var commitMsg = '[ AB#' + formId + ' ] - ' + commitTitle 
-    var main = commitMsg;
- 
+    
+    // Strip quotes Bug: #1
+    var withoutQuotes = commitMsg
+        .replaceAll('"', '')
+        .replaceAll("'", '');
+
+    var main = withoutQuotes;
+
      if( !main ){
          if(!formId) console.log('Form Id not getting found')
          if(!commitTitle) console.log('Commit Title not being found')
@@ -104,7 +111,10 @@ function getAzureCommitMessage(pageUrl) {
      // bug = 1
      // US = 2
     let branchText = ''
-    var itemTitle = document.querySelector('.caption').innerText    
+    var itemTitle = document.querySelector('.caption')
+    if(itemTitle)
+        itemTitle = itemTitle.innerText    
+
     azureStoryNumber = getLastString(itemTitle)  
     let type = getItemType(itemTitle);
 
@@ -270,6 +280,8 @@ function setAllSettings(settings) {
 }
 
 function getLastString(text) {
+    if(!text) return ''
+
     let temp = text.split(' ')
     return temp[temp.length - 1];
 }
