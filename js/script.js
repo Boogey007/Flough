@@ -50,99 +50,123 @@ function determineSourcePage(pageUrl) {
         return 2
 }
 
-function copyTextToClipboard(text) {
-	//Create a text-box field where we can insert text to.
-	var copyFrom = document.createElement("textarea");
+    function copyTextToClipboard(text) {
+        //Create a text-box field where we can insert text to.
+        var copyFrom = document.createElement("textarea");
 
-	//Set the text content to be the text you wished to copy.
-	copyFrom.textContent = text;
+        //Set the text content to be the text you wished to copy.
+        copyFrom.textContent = text;
 
-	//Append the text-box field into the body as a child.
-	//"execCommand()" only works when there exists selected text, and the text is inside
-	//document.body (meaning the text is part of a valid rendered HTML element).
-	document.body.appendChild(copyFrom);
+        //Append the text-box field into the body as a child.
+        //"execCommand()" only works when there exists selected text, and the text is inside
+        //document.body (meaning the text is part of a valid rendered HTML element).
+        document.body.appendChild(copyFrom);
 
-	//Select all the text!
-	copyFrom.select();
+        //Select all the text!
+        copyFrom.select();
 
-	//Execute command
-	document.execCommand('copy');
+        //Execute command
+        document.execCommand('copy');
 
-	//(Optional) De-select the text using blur().
-	copyFrom.blur();
+        //(Optional) De-select the text using blur().
+        copyFrom.blur();
 
-	//Remove the textbox field from the document.body, so no other JavaScript nor
-	//other elements can get access to this.
-	document.body.removeChild(copyFrom);
-  }
+        //Remove the textbox field from the document.body, so no other JavaScript nor
+        //other elements can get access to this.
+        document.body.removeChild(copyFrom);
+    }
 
-
+    function getDefectAndNumber() {
+        // Select the defect type
+        const defectElement = document.querySelector('.work-item-form-header span[aria-label]');
+        const defectType = defectElement ? defectElement.getAttribute('aria-label' || '').toLowerCase() : '';
+    
+        // Select the number from the specific div
+        const numberElement = document.querySelector('.work-item-form-header .body-xl');
+        const number = numberElement ? numberElement.textContent.trim() : '';
+    
+        return { defectType, number };
+    }
+    
 // *** ---------- START: AZURE ------------  *** //
 function getAzureCommitMessage(pageUrl) {
-    // Get The title of the task -- Emails - Reply To All
-    var tempEl = document.querySelector('[id^="witc_"][id$="txt"]');
-    if( !! tempEl )
-        tempEl = tempEl.id
+    let tempEl = document.querySelector('[id^="witc_"][id$="txt"]');
+    let number = '';
+    let title = '';
     
-    var inputBox = document.getElementById(tempEl)
-    var commitTitle = !! inputBox ? inputBox.value : ''
+    // Check if tempEl exists and set tempEl to its id if it does
+    tempEl = tempEl ? tempEl.id : '';
 
-    // Get the number of the task -- 422
-    var formId = document.getElementsByClassName("work-item-form-id")[0] ? document.getElementsByClassName("work-item-form-id")[0].innerText : '' ;    
+    if (!tempEl) {
+        // Select the number from the specific div
+        const numberElement = document.querySelector('.work-item-form-header .body-xl');
+        number = numberElement ? numberElement.textContent.trim() : '';
+        
+        // Select the title from the input field
+        const titleElement = document.querySelector('.work-item-title-textfield input');
+        title = titleElement ? titleElement.value.trim() : '';      
+    }
+
+    const inputBox = document.getElementById(tempEl);
+    const commitTitle = inputBox ? inputBox.value : '';
+
+    // Use number and title if they have values
+    const finalNumber = number || (document.querySelector('.work-item-form-id') ? document.querySelector('.work-item-form-id').innerText : '');
+    const finalTitle = title || commitTitle;
 
     // Assemble Commit Message
-    var commitMsg = '[ AB#' + formId + ' ] - ' + commitTitle 
+    let commitMsg = `[ AB#${finalNumber} ] - ${finalTitle}`;
     
-    // Strip quotes Bug: #1
-    var withoutQuotes = commitMsg
-        .replaceAll('"', '')
-        .replaceAll("'", '');
+    // Strip quotes
+    commitMsg = commitMsg.replaceAll('"', '').replaceAll("'", '');
 
-    var main = withoutQuotes;
+    if (!commitMsg) {
+        if (!finalNumber) console.log('Form Id not getting found');
+        if (!finalTitle) console.log('Commit Title not being found');
+    }
 
-     if( !main ){
-         if(!formId) console.log('Form Id not getting found')
-         if(!commitTitle) console.log('Commit Title not being found')
-     }
- 
-     return main
+    return commitMsg;
  }
+
+// Example usage
  function getAzureBranchMessage(pageUrl) {
-     // bug = 1
-     // US = 2
-    let branchText = ''
-    var itemTitle = document.querySelector('.caption')
-    if(itemTitle)
-        itemTitle = itemTitle.innerText    
+    let branchText = '';
+    let prefaceText = '';
+    let azureStoryNumber = '';
 
-    azureStoryNumber = getLastString(itemTitle)  
-    let type = getItemType(itemTitle);
+    const itemTitle = document.querySelector('.caption');
 
+    let type = 0;
 
-     switch (type) {
+    if (!itemTitle || !itemTitle.innerText) {
+        const result = getDefectAndNumber();
+        azureStoryNumber = result.number;
+        type = getItemType(result.defectType);
+    } else {
+        azureStoryNumber = getLastString(itemTitle.innerText);
+        type = getItemType(itemTitle.innerText);
+    }
+
+    switch (type) {
         case 1: // Bug
-            prefaceText = `bugfix/`            
+            prefaceText = `bugfix/`;
             break;
         case 2: // User Story
-            prefaceText = `feature/`
+            prefaceText = `feature/`;
             break;
         default:
-            prefaceText = `${TEAM_INITIALS}/${azureStoryNumber}`
+            prefaceText = ``;
             break;
-     }
-  
-     // Form Branch Text
-     if(TEAM_INITIALS)
-        TEAM_INITIALS = TEAM_INITIALS + '/'
+    }
 
-    branchText = prefaceText += TEAM_INITIALS
+    // Form Branch Text
+    if (TEAM_INITIALS) {
+        branchText = `${prefaceText}${TEAM_INITIALS}/${azureStoryNumber}`;
+    } else {
+        branchText = `${prefaceText}${azureStoryNumber}`;
+    }
 
-    // Always end with story/number
-    branchText = prefaceText += azureStoryNumber
-
-     var main = branchText;
-
-      return removeWhitespace(main)
+    return removeWhitespace(branchText);
   }
  // *** ---------- END: AZURE ------------  *** //
  
@@ -279,6 +303,17 @@ function setAllSettings(settings) {
     TEAM_INITIALS = settings.teamInitials ? settings.teamInitials : ''
 }
 
+function getItemType(str) {
+    if (!str) return 0;
+    if (str.toLowerCase().includes('bug')) {
+        return 1;
+    } else if (str.toLowerCase().includes('user story')) {
+        return 2;
+    } else {
+        return 0;
+    }
+}
+
 function getLastString(text) {
     if(!text) return ''
 
@@ -286,7 +321,6 @@ function getLastString(text) {
     return temp[temp.length - 1];
 }
 
-function removeWhitespace(input) {
-    input = input.replace(/\s/g, '');
-    return input;
+function removeWhitespace(str) {
+    return str.replace(/\s+/g, '');
 }

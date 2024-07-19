@@ -3,7 +3,7 @@
 
 	"name": "Flough",
 	"description": "Flough is a git manager used to effectively create commit messages and git branch names all at the click of a button.",
-	"version": "0.0.5",
+	"version": "0.0.8",
 
 	"permissions": [
 		"storage",
